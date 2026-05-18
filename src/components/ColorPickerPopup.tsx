@@ -15,7 +15,8 @@ interface ColorPickerPopupProps {
 
 export default function ColorPickerPopup({ onSelect, onClose, position, colors, theme }: ColorPickerPopupProps) {
   const popupRef = React.useRef<HTMLDivElement>(null);
-  const [adjustedPos, setAdjustedPos] = React.useState({ x: position.x, y: position.y - 80 });
+  const [isReady, setIsReady] = React.useState(false);
+  const [adjustedPos, setAdjustedPos] = React.useState({ x: position.x, y: position.y });
 
   React.useLayoutEffect(() => {
     if (popupRef.current) {
@@ -23,18 +24,28 @@ export default function ColorPickerPopup({ onSelect, onClose, position, colors, 
       const padding = 12;
       const screenWidth = window.innerWidth;
       
-      // Calculate desired left position (centered on peg by default)
-      let left = position.x - rect.width / 2;
+      const isMobile = screenWidth < 640;
+      
+      // Calculate desired left position
+      let left = isMobile 
+        ? (screenWidth - rect.width) / 2 
+        : position.x - rect.width / 2;
+
+      // Vertical position - fixed height above the peg
+      // We use a constant offset above the peg's top center
       let top = position.y - rect.height - 15;
 
-      // Ensure popup is within horizontal bounds
-      if (left < padding) {
-        left = padding;
-      } else if (left + rect.width > screenWidth - padding) {
-        left = screenWidth - rect.width - padding;
+      // Ensure popup is within horizontal bounds for desktop (mobile is already centered)
+      if (!isMobile) {
+        if (left < padding) {
+          left = padding;
+        } else if (left + rect.width > screenWidth - padding) {
+          left = screenWidth - rect.width - padding;
+        }
       }
 
       // Vertical boundary check: if too high, flip to below the peg
+      // We still do this to prevent it from going off the very top of the screen
       if (top < padding) {
         top = position.y + 50; 
       }
@@ -45,6 +56,7 @@ export default function ColorPickerPopup({ onSelect, onClose, position, colors, 
       }
 
       setAdjustedPos({ x: left, y: top });
+      setIsReady(true);
     }
   }, [position, colors.length]);
 
@@ -53,13 +65,23 @@ export default function ColorPickerPopup({ onSelect, onClose, position, colors, 
       <motion.div
         key="picker-popup"
         ref={popupRef}
-        initial={{ opacity: 0, scale: 0.8, y: position.y }}
-        animate={{ opacity: 1, scale: 1, x: adjustedPos.x, y: adjustedPos.y }}
-        exit={{ opacity: 0, scale: 0.8, y: position.y }}
-        className="fixed z-[100] glass-card p-1.5 sm:p-2 rounded-full flex items-center gap-1 shadow-2xl border-white/20 whitespace-nowrap"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={isReady ? { 
+          opacity: 1, 
+          scale: 1, 
+        } : { 
+          opacity: 0, 
+          scale: 0.8,
+        }}
+        transition={{
+          opacity: { duration: 0.2 },
+          scale: { duration: 0.2 }
+        }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className={`fixed z-[100] glass-card p-1.5 sm:p-2 rounded-full flex items-center gap-1 shadow-2xl border-white/20 whitespace-nowrap ${isReady ? 'visible' : 'invisible'}`}
         style={{ 
-          left: 0,
-          top: 0
+          left: adjustedPos.x,
+          top: adjustedPos.y
         }}
       >
         <div key="picker-container" className="flex items-center gap-1 sm:gap-1.5">
