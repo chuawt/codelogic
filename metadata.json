@@ -1,0 +1,8 @@
+{
+  "name": "Codebreaker Tactical",
+  "description": "A high-fidelity logic-puzzle game where you decipher hidden color sequences with tiered difficulty levels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

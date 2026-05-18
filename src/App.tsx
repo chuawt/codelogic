@@ -1,0 +1,146 @@
+import React, { useState } from 'react';
+import { Difficulty, GameStatus, Theme } from './types';
+import DifficultyMenu from './components/DifficultyMenu';
+import GameBoard from './components/GameBoard';
+import SettingsModal from './components/SettingsModal';
+import { Settings, Timer as TimerIcon, Trophy, HelpCircle, LayoutGrid, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+
+export default function App() {
+  const [gameState, setGameState] = useState<GameStatus>('MENU');
+  const [difficulty, setDifficulty] = useState<Difficulty>('Classic');
+  const [theme, setTheme] = useState<Theme>('Lollipop');
+  const [showRules, setShowRules] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  const startLevel = (d: Difficulty) => {
+    setDifficulty(d);
+    setGameState('PLAYING');
+  };
+
+  return (
+    <div className="min-h-screen max-h-screen overflow-hidden flex flex-col font-sans bg-surface text-white">
+      {/* Navbar - Fixed height */}
+      <header className="shrink-0 bg-surface/80 backdrop-blur-xl border-b border-white/10 px-6 h-14 flex justify-between items-center z-50">
+        <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-1 p-0.5" onClick={() => setGameState('MENU')}>
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-400 peg-3d shadow-sm" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-100 peg-3d shadow-sm" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-300 peg-3d shadow-sm" />
+            <div className="w-2.5 h-2.5 rounded-full bg-sky-300 peg-3d shadow-sm" />
+          </div>
+          <h1 className="text-xl font-bold tracking-tighter flex cursor-pointer" onClick={() => setGameState('MENU')}>
+            {['C','O','D','E','B','R','E','A','K','E','R'].map((char, index) => {
+              const colors = ['text-rose-400', 'text-orange-300', 'text-amber-200', 'text-emerald-300', 'text-sky-300', 'text-violet-300'];
+              return <span key={index} className={colors[index % colors.length]}>{char}</span>
+            })}
+          </h1>
+        </div>
+        <div className="flex gap-1">
+          <button 
+            onClick={() => setShowSettings(true)}
+            className="text-on-surface-variant hover:text-white transition-colors p-2"
+            title="Settings"
+          >
+            <Settings size={20} />
+          </button>
+          <button 
+            onClick={() => setShowRules(true)}
+            className="text-on-surface-variant hover:text-white transition-colors p-2"
+            title="Help"
+          >
+            <HelpCircle size={20} />
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content - Scrollable if needed, but tries to fit */}
+      <main className="flex-grow overflow-y-auto px-4 py-6 max-w-lg mx-auto w-full flex flex-col items-center custom-scrollbar">
+        <AnimatePresence mode="wait">
+          {gameState === 'MENU' ? (
+            <motion.div
+              key="menu"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full"
+            >
+              <DifficultyMenu 
+                onSelect={startLevel} 
+                onShowRules={() => setShowRules(true)}
+                onShowSettings={() => setShowSettings(true)}
+                theme={theme}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="board"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="w-full h-full flex flex-col"
+            >
+              <GameBoard theme={theme} difficulty={difficulty} onQuit={() => setGameState('MENU')} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+
+      {/* Settings Modal */}
+      <SettingsModal 
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentTheme={theme}
+        onThemeChange={(t) => {
+          setTheme(t);
+        }}
+      />
+
+      {/* Rules Modal */}
+      <AnimatePresence>
+        {showRules && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="glass-card w-full max-w-sm p-8 rounded-3xl space-y-6"
+            >
+              <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
+                <Info className="text-secondary" /> Game Intelligence
+              </h2>
+              <div className="space-y-4 text-on-surface-variant leading-relaxed text-sm">
+                <p>Crack the secret sequence generated by the computer. The colors may repeat.</p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 rounded-full perfect-dot shrink-0" />
+                    <p><span className="text-red-400 font-bold">Red Glow:</span> Correct color in the exact right position.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 rounded-full bg-white shrink-0 border border-black/20 shadow-sm" />
+                    <p><span className="text-white font-bold">Solid White:</span> Correct color exists but in a different position.</p>
+                  </div>
+                </div>
+                <p>Select difficulties to change number of pegs and attempts available. Good luck, Operative.</p>
+              </div>
+              <button
+                onClick={() => setShowRules(false)}
+                className="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-emerald-500/20"
+              >
+                Understood
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function InfoIcon() {
+  return <HelpCircle className="text-secondary" />;
+}
+
+function LayoutGridIcon() {
+  return <Trophy size={20} className="scale-x-[-1]" />;
+}
