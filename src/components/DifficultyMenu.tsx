@@ -55,7 +55,7 @@ export default function DifficultyMenu({ onSelect, onShowRules, onShowSettings, 
                             theme === 'Lollipop' ? `peg-3d shadow-lg ${COLOR_MAP[color]}` : 'bg-white/10 text-[10px]'
                           }`}
                         >
-                          {theme === 'Disney' && THEME_PEGS.Disney[color]}
+                          {theme === 'Animals' && THEME_PEGS.Animals[color]}
                         </div>
                       );
                     })}

@@ -19,8 +19,8 @@ export const COLOR_MAP: Record<PegColor, string> = {
   pink: 'bg-pink-300 shadow-pink-300/40',
 };
 
-export const THEME_PEGS: Record<'Disney', Record<PegColor, string>> = {
-  Disney: {
+export const THEME_PEGS: Record<'Animals', Record<PegColor, string>> = {
+  Animals: {
     red: '🐭',
     orange: '🐯',
     yellow: '🐻',

@@ -128,7 +128,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                               : 'bg-surface-container-highest shadow-inner border border-white/5'
                           } ${isCurrent ? 'hover:ring-2 ring-primary/40 active:scale-95' : ''}`}
                         >
-                          {color && theme === 'Disney' && THEME_PEGS.Disney[color]}
+                          {color && theme === 'Animals' && THEME_PEGS.Animals[color]}
                           {!color && isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
                         </div>
                       );

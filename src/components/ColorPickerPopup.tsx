@@ -35,7 +35,7 @@ export default function ColorPickerPopup({ onSelect, onClose, position, colors, 
               theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl'
             }`}
           >
-            {theme === 'Disney' && THEME_PEGS.Disney[color]}
+            {theme === 'Animals' && THEME_PEGS.Animals[color]}
           </button>
         ))}
         <div className="w-[1px] h-6 bg-white/10 mx-0.5 shrink-0" />

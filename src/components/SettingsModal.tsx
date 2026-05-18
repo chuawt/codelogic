@@ -40,40 +40,40 @@ export default function SettingsModal({ isOpen, onClose, currentTheme, onThemeCh
                   onClick={() => onThemeChange('Lollipop')}
                   className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
                     currentTheme === 'Lollipop' 
-                      ? 'bg-primary/20 border-primary text-white' 
+                      ? 'bg-rose-400/20 border-rose-400 text-white' 
                       : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                      <Candy size={20} className={currentTheme === 'Lollipop' ? 'text-primary' : 'text-white/40'} />
+                    <div className="w-10 h-10 rounded-xl bg-rose-400/20 flex items-center justify-center">
+                      <Candy size={20} className={currentTheme === 'Lollipop' ? 'text-rose-400' : 'text-white/40'} />
                     </div>
                     <div className="text-left">
                       <div className="font-bold">Lollipop</div>
                       <div className="text-[10px] opacity-60">Glossy 3D candy colors</div>
                     </div>
                   </div>
-                  {currentTheme === 'Lollipop' && <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]" />}
+                  {currentTheme === 'Lollipop' && <div className="w-2 h-2 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.8)]" />}
                 </button>
 
                 <button
-                  onClick={() => onThemeChange('Disney')}
+                  onClick={() => onThemeChange('Animals')}
                   className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
-                    currentTheme === 'Disney' 
+                    currentTheme === 'Animals' 
                       ? 'bg-emerald-500/20 border-emerald-500 text-white' 
                       : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                      <Sparkles size={20} className={currentTheme === 'Disney' ? 'text-emerald-500' : 'text-white/40'} />
+                      <Sparkles size={20} className={currentTheme === 'Animals' ? 'text-emerald-500' : 'text-white/40'} />
                     </div>
                     <div className="text-left">
-                      <div className="font-bold">Disney</div>
-                      <div className="text-[10px] opacity-60">Cute Tsum Tsum characters</div>
+                      <div className="font-bold">Animals</div>
+                      <div className="text-[10px] opacity-60">Cute animal characters</div>
                     </div>
                   </div>
-                  {currentTheme === 'Disney' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />}
+                  {currentTheme === 'Animals' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />}
                 </button>
               </div>
             </div>

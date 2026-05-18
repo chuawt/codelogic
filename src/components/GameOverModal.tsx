@@ -56,7 +56,7 @@ export default function GameOverModal({ status, time, moves, secretCode, theme, 
                   theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 text-xl'
                 }`}
               >
-                {theme === 'Disney' && THEME_PEGS.Disney[color]}
+                {theme === 'Animals' && THEME_PEGS.Animals[color]}
               </div>
             ))}
           </div>

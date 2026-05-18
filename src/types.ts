@@ -1,7 +1,7 @@
 
 export type Difficulty = 'Easy' | 'Classic' | 'Challenging';
 
-export type Theme = 'Lollipop' | 'Disney';
+export type Theme = 'Lollipop' | 'Animals';
 
 export type PegColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'darkBlue' | 'pink';
 
