@@ -94,8 +94,8 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
       </div>
 
       <div className="flex-grow glass-card rounded-3xl p-3 sm:p-6 board-recess relative overflow-hidden flex flex-col custom-scrollbar">
-        <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col-reverse gap-3 pr-1">
-          <div className="flex flex-col-reverse gap-3 min-h-full justify-start">
+        <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col-reverse gap-1.5 sm:gap-3 pr-1">
+          <div className="flex flex-col-reverse gap-1.5 sm:gap-3 min-h-full justify-start">
             {/* History Rows - Stacked from Bottom to Top */}
             {Array.from({ length: config.attempts }).map((_, rowIndex) => {
             const attempt = history[rowIndex];
@@ -108,29 +108,29 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className={`flex items-center justify-between p-3 rounded-2xl transition-all ${
+                className={`flex items-center justify-between p-2 sm:p-3 rounded-2xl transition-all ${
                   isCurrent ? 'bg-primary/20 border border-primary/40' : 'bg-surface-container/40'
                 } ${isInactive ? 'opacity-30 grayscale' : ''}`}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-white/30 border border-white/5 shadow-inner">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white/30 border border-white/5 shadow-inner">
                     {rowIndex + 1}
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-1.5 sm:gap-3">
                     {Array.from({ length: config.pegs }).map((_, colIndex) => {
                       const color = attempt ? attempt.colors[colIndex] : isCurrent ? currentGuess[colIndex] : null;
                       return (
                         <div
                           key={`row-${rowIndex}-peg-${colIndex}`}
                           onClick={(e) => isCurrent && handlePegClick(colIndex, e)}
-                          className={`w-10 h-10 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                          className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full transition-all flex items-center justify-center cursor-pointer ${
                             color 
                               ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl'
                               : 'bg-surface-container-highest shadow-inner border border-white/5'
                           } ${isCurrent ? 'hover:ring-2 ring-primary/40 active:scale-95' : ''}`}
                         >
                           {color && theme === 'Animals' && THEME_PEGS.Animals[color]}
-                          {!color && isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                          {!color && isCurrent && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-white/20" />}
                         </div>
                       );
                     })}
@@ -138,7 +138,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                 </div>
 
                 {/* Feedback Area */}
-                <div className="w-14 h-14 glass-card rounded-xl flex items-center justify-center relative overflow-hidden">
+                <div className="w-9 h-9 sm:w-14 sm:h-14 glass-card rounded-xl flex items-center justify-center relative overflow-hidden">
                   {isCurrent && isCurrentRowFull ? (
                     <motion.button
                       initial={{ scale: 0, rotate: -45 }}
@@ -147,17 +147,18 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                       onClick={handleSubmit}
                       className="w-full h-full bg-emerald-500 text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform"
                     >
-                      <Check size={28} strokeWidth={3} />
+                      <Check size={18} className="sm:hidden" strokeWidth={3} />
+                      <Check size={28} className="hidden sm:block" strokeWidth={3} />
                     </motion.button>
                   ) : attempt?.feedback ? (
-                    <div className="grid grid-cols-2 gap-1.5 p-1.5 w-full h-full items-center justify-items-center">
+                    <div className="grid grid-cols-2 gap-0.5 sm:gap-1.5 p-0.5 sm:p-1.5 w-full h-full items-center justify-items-center">
                       {Array.from({ length: config.pegs }).map((_, i) => {
                         const isPerfect = i < attempt.feedback!.perfect;
                         const isPartial = !isPerfect && i < attempt.feedback!.perfect + attempt.feedback!.partial;
                         return (
                           <div
                             key={`row-${rowIndex}-feedback-${i}`}
-                            className={`w-2.5 h-2.5 rounded-full transition-all ${
+                            className={`w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
                               isPerfect ? 'perfect-dot' : 
                               isPartial ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]' : 
                               'bg-white/5 border border-white/5'
@@ -175,35 +176,39 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
       </div>
     </div>
 
-    {activePicker && (
-        <ColorPickerPopup
-          position={{ x: activePicker.x, y: activePicker.y }}
-          onSelect={handleColorSelect}
-          onClose={() => setActivePicker(null)}
-          colors={COLORS.slice(0, config.colorCount)}
-          theme={theme}
-        />
-      )}
+      <AnimatePresence>
+        {activePicker && (
+          <ColorPickerPopup
+            position={{ x: activePicker.x, y: activePicker.y }}
+            onSelect={handleColorSelect}
+            onClose={() => setActivePicker(null)}
+            colors={COLORS.slice(0, config.colorCount)}
+            theme={theme}
+          />
+        )}
+      </AnimatePresence>
 
-      {gameStatus !== 'PLAYING' && (
-        <GameOverModal
-          status={gameStatus}
-          time={time}
-          moves={history.length}
-          secretCode={secretCode}
-          theme={theme}
-          onAgain={() => {
-            const availableColors = COLORS.slice(0, config.colorCount);
-            const code = Array.from({ length: config.pegs }, () => availableColors[Math.floor(Math.random() * availableColors.length)]);
-            setSecretCode(code);
-            setCurrentGuess(Array(config.pegs).fill(null));
-            setHistory([]);
-            setGameStatus('PLAYING');
-            setTime(0);
-          }}
-          onMenu={onQuit}
-        />
-      )}
+      <AnimatePresence>
+        {gameStatus !== 'PLAYING' && (
+          <GameOverModal
+            status={gameStatus}
+            time={time}
+            moves={history.length}
+            secretCode={secretCode}
+            theme={theme}
+            onAgain={() => {
+              const availableColors = COLORS.slice(0, config.colorCount);
+              const code = Array.from({ length: config.pegs }, () => availableColors[Math.floor(Math.random() * availableColors.length)]);
+              setSecretCode(code);
+              setCurrentGuess(Array(config.pegs).fill(null));
+              setHistory([]);
+              setGameStatus('PLAYING');
+              setTime(0);
+            }}
+            onMenu={onQuit}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

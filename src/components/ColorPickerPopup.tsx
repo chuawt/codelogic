@@ -20,66 +20,76 @@ export default function ColorPickerPopup({ onSelect, onClose, position, colors, 
   React.useLayoutEffect(() => {
     if (popupRef.current) {
       const rect = popupRef.current.getBoundingClientRect();
-      const padding = 16;
-      let x = position.x;
-      let y = position.y - rect.height - 20;
+      const padding = 12;
+      const screenWidth = window.innerWidth;
+      
+      // Calculate desired left position (centered on peg by default)
+      let left = position.x - rect.width / 2;
+      let top = position.y - rect.height - 15;
 
-      // Horizontal boundary check
-      const halfWidth = rect.width / 2;
-      if (x - halfWidth < padding) {
-        x = halfWidth + padding;
-      } else if (x + halfWidth > window.innerWidth - padding) {
-        x = window.innerWidth - halfWidth - padding;
+      // Ensure popup is within horizontal bounds
+      if (left < padding) {
+        left = padding;
+      } else if (left + rect.width > screenWidth - padding) {
+        left = screenWidth - rect.width - padding;
       }
 
-      // Vertical boundary check
-      if (y < padding) {
-        // Not enough space above, move below
-        y = position.y + 60;
+      // Vertical boundary check: if too high, flip to below the peg
+      if (top < padding) {
+        top = position.y + 50; 
+      }
+      
+      // If flipping below still goes off screen, clamp it
+      if (top + rect.height > window.innerHeight - padding) {
+        top = window.innerHeight - rect.height - padding;
       }
 
-      setAdjustedPos({ x, y });
+      setAdjustedPos({ x: left, y: top });
     }
   }, [position, colors.length]);
 
   return (
-    <AnimatePresence>
+    <>
       <motion.div
+        key="picker-popup"
         ref={popupRef}
-        initial={{ opacity: 0, scale: 0.9, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: adjustedPos.y }}
-        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-        className="fixed z-[100] glass-card p-2 rounded-full flex items-center gap-1.5 shadow-2xl border-white/20"
+        initial={{ opacity: 0, scale: 0.8, y: position.y }}
+        animate={{ opacity: 1, scale: 1, x: adjustedPos.x, y: adjustedPos.y }}
+        exit={{ opacity: 0, scale: 0.8, y: position.y }}
+        className="fixed z-[100] glass-card p-1.5 sm:p-2 rounded-full flex items-center gap-1 shadow-2xl border-white/20 whitespace-nowrap"
         style={{ 
-          left: adjustedPos.x,
-          top: 0, 
-          transform: 'translateX(-50%)'
+          left: 0,
+          top: 0
         }}
       >
-        {colors.map((color) => (
+        <div key="picker-container" className="flex items-center gap-1 sm:gap-1.5">
+          {colors.map((color) => (
+            <button
+              key={`picker-btn-${color}`}
+              onClick={() => onSelect(color)}
+              className={`w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-md ${
+                theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl'
+              }`}
+            >
+              {theme === 'Animals' && THEME_PEGS.Animals[color]}
+            </button>
+          ))}
+          <div key="picker-divider" className="w-[1px] h-6 bg-white/10 mx-0.5 shrink-0" />
           <button
-            key={`picker-${color}`}
-            onClick={() => onSelect(color)}
-            className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-md ${
-              theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl'
-            }`}
+            key="picker-btn-none"
+            onClick={() => onSelect(null)}
+            className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full bg-white/5 border border-white/20 peg-3d flex items-center justify-center text-white/20 hover:text-white/40 transition-colors active:scale-95"
+            title="Remove color"
           >
-            {theme === 'Animals' && THEME_PEGS.Animals[color]}
+            <div key="picker-none-dot" className="w-1.5 h-1.5 rounded-full bg-current" />
           </button>
-        ))}
-        <div className="w-[1px] h-6 bg-white/10 mx-0.5 shrink-0" />
-        <button
-          onClick={() => onSelect(null)}
-          className="w-9 h-9 shrink-0 rounded-full bg-white/5 border border-white/20 peg-3d flex items-center justify-center text-white/20 hover:text-white/40 transition-colors active:scale-95"
-          title="Remove color"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-current" />
-        </button>
+        </div>
       </motion.div>
       <div 
+        key="picker-backdrop"
         className="fixed inset-0 z-[90]" 
         onClick={onClose} 
       />
-    </AnimatePresence>
+    </>
   );
 }
