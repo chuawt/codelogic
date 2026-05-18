@@ -19,9 +19,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen max-h-screen overflow-hidden flex flex-col font-sans bg-surface text-white">
+    <div className="h-[100dvh] w-full overflow-hidden flex flex-col font-sans bg-surface text-white">
       {/* Navbar - Fixed height */}
-      <header className="shrink-0 bg-surface/80 backdrop-blur-xl border-b border-white/10 px-6 h-14 flex justify-between items-center z-50">
+      <header className="shrink-0 bg-surface/80 backdrop-blur-xl border-b border-white/10 px-4 h-14 flex justify-between items-center z-50">
         <div className="flex items-center gap-2">
           <div className="grid grid-cols-2 gap-1 p-0.5" onClick={() => setGameState('MENU')}>
             <div className="w-2.5 h-2.5 rounded-full bg-rose-400 peg-3d shadow-sm" />
@@ -30,9 +30,9 @@ export default function App() {
             <div className="w-2.5 h-2.5 rounded-full bg-sky-300 peg-3d shadow-sm" />
           </div>
           <h1 className="text-xl font-bold tracking-tighter flex cursor-pointer" onClick={() => setGameState('MENU')}>
-            {['C','O','D','E','B','R','E','A','K','E','R'].map((char, index) => {
+            {['C','O','D','E','L','O','G','I','C'].map((char, index) => {
               const colors = ['text-rose-400', 'text-orange-300', 'text-amber-200', 'text-emerald-300', 'text-sky-300', 'text-violet-300'];
-              return <span key={index} className={colors[index % colors.length]}>{char}</span>
+              return <span key={`logo-${index}`} className={colors[index % colors.length]}>{char}</span>
             })}
           </h1>
         </div>
@@ -54,8 +54,8 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content - Scrollable if needed, but tries to fit */}
-      <main className="flex-grow overflow-y-auto px-4 py-6 max-w-lg mx-auto w-full flex flex-col items-center custom-scrollbar">
+      {/* Main Content */}
+      <main className="flex-grow overflow-hidden px-4 py-4 max-w-lg mx-auto w-full flex flex-col items-center">
         <AnimatePresence mode="wait">
           {gameState === 'MENU' ? (
             <motion.div
@@ -63,7 +63,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full"
+              className="w-full h-full overflow-y-auto custom-scrollbar"
             >
               <DifficultyMenu 
                 onSelect={startLevel} 
@@ -78,7 +78,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              className="w-full h-full flex flex-col"
+              className="w-full h-full overflow-hidden flex flex-col"
             >
               <GameBoard theme={theme} difficulty={difficulty} onQuit={() => setGameState('MENU')} />
             </motion.div>
@@ -99,12 +99,12 @@ export default function App() {
       {/* Rules Modal */}
       <AnimatePresence>
         {showRules && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="glass-card w-full max-w-sm p-8 rounded-3xl space-y-6"
+              className="glass-card w-full max-w-sm p-8 rounded-3xl space-y-6 my-auto"
             >
               <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
                 <Info className="text-secondary" /> Game Intelligence

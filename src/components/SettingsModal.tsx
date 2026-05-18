@@ -14,12 +14,12 @@ export default function SettingsModal({ isOpen, onClose, currentTheme, onThemeCh
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[400] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+        <div className="fixed inset-0 z-[400] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="glass-card w-full max-w-sm p-8 rounded-3xl space-y-8 relative overflow-hidden"
+            className="glass-card w-full max-w-sm p-8 rounded-3xl space-y-8 relative overflow-hidden my-auto"
           >
             <button 
               onClick={onClose}

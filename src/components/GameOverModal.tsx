@@ -19,11 +19,11 @@ export default function GameOverModal({ status, time, moves, secretCode, theme, 
   const isWon = status === 'WON';
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm overflow-y-auto">
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="glass-card w-full max-w-sm p-8 rounded-3xl text-center space-y-6"
+        className="glass-card w-full max-w-sm p-8 rounded-3xl text-center space-y-6 my-auto"
       >
         <div className="flex justify-center">
           {isWon ? (
@@ -51,7 +51,7 @@ export default function GameOverModal({ status, time, moves, secretCode, theme, 
           <div className="flex justify-center gap-3">
             {secretCode.map((color, i) => (
               <div 
-                key={i} 
+                key={`secret-${i}`} 
                 className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 text-xl'
                 }`}

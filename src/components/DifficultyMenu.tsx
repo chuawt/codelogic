@@ -26,7 +26,7 @@ export default function DifficultyMenu({ onSelect, onShowRules, onShowSettings, 
           
           return (
             <motion.div
-              key={level}
+              key={`difficulty-${level}`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onSelect(level)}
@@ -50,7 +50,7 @@ export default function DifficultyMenu({ onSelect, onShowRules, onShowSettings, 
                       const color = availableColors[i % availableColors.length];
                       return (
                         <div 
-                          key={i} 
+                          key={`preview-${level}-${i}`} 
                           className={`w-3.5 h-3.5 rounded-full flex items-center justify-center ${
                             theme === 'Lollipop' ? `peg-3d shadow-lg ${COLOR_MAP[color]}` : 'bg-white/10 text-[10px]'
                           }`}
@@ -89,20 +89,9 @@ export default function DifficultyMenu({ onSelect, onShowRules, onShowSettings, 
         })}
       </div>
 
-      <div className="flex justify-center gap-3 pt-4">
-        <button 
-          onClick={(e) => { e.stopPropagation(); onShowRules(); }}
-          className="flex items-center gap-2 text-emerald-300 hover:text-emerald-400 transition-colors font-bold uppercase tracking-widest text-[10px] py-2 px-6 glass-card rounded-full border-emerald-500/20"
-        >
-          <HelpCircle size={14} /> View Rules
-        </button>
-        <button 
-          onClick={(e) => { e.stopPropagation(); onShowSettings(); }}
-          className="flex items-center gap-2 text-sky-300 hover:text-sky-400 transition-colors font-bold uppercase tracking-widest text-[10px] py-2 px-6 glass-card rounded-full border-sky-500/20"
-        >
-          <Settings size={14} /> Settings
-        </button>
-      </div>
+      <p className="text-right text-on-surface-variant text-xs italic pt-4">
+        <span className="text-rose-400 italic">♥</span> by chuawt
+      </p>
     </div>
   );
 }

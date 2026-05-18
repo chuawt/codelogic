@@ -77,33 +77,34 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
   const isCurrentRowFull = !currentGuess.includes(null);
 
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col h-full space-y-6">
+    <div className="w-full max-w-lg mx-auto flex flex-col h-full space-y-4">
       {/* Game Header */}
-      <div className="flex justify-between items-center px-2">
-        <div className="flex items-center gap-3 bg-surface-container-high px-4 py-2 rounded-full border border-white/5 shadow-lg">
-          <Timer size={18} className="text-primary" />
-          <span className="font-mono text-lg font-bold text-on-surface-variant">
+      <div className="flex justify-between items-center px-1 shrink-0">
+        <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full border border-white/5 shadow-lg">
+          <Timer size={16} className="text-primary" />
+          <span className="font-mono text-base font-bold text-on-surface-variant">
             {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}
           </span>
         </div>
         <div className="flex gap-2">
-          <button onClick={onQuit} className="p-2 glass-card rounded-full text-on-surface-variant hover:text-white transition-colors">
-            <Home size={20} />
+          <button onClick={onQuit} className="p-1.5 glass-card rounded-full text-on-surface-variant hover:text-white transition-colors">
+            <Home size={18} />
           </button>
         </div>
       </div>
 
-      <div className="flex-grow glass-card rounded-3xl p-6 board-recess relative overflow-y-auto max-h-[72vh] flex flex-col-reverse custom-scrollbar">
-        <div className="flex flex-col-reverse gap-4 min-h-full justify-start">
-          {/* History Rows - Stacked from Bottom to Top */}
-          {Array.from({ length: config.attempts }).map((_, rowIndex) => {
+      <div className="flex-grow glass-card rounded-3xl p-3 sm:p-6 board-recess relative overflow-hidden flex flex-col custom-scrollbar">
+        <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col-reverse gap-3 pr-1">
+          <div className="flex flex-col-reverse gap-3 min-h-full justify-start">
+            {/* History Rows - Stacked from Bottom to Top */}
+            {Array.from({ length: config.attempts }).map((_, rowIndex) => {
             const attempt = history[rowIndex];
             const isCurrent = rowIndex === history.length && gameStatus === 'PLAYING';
             const isInactive = rowIndex > history.length;
 
             return (
               <motion.div
-                key={rowIndex}
+                key={`row-${rowIndex}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -120,7 +121,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                       const color = attempt ? attempt.colors[colIndex] : isCurrent ? currentGuess[colIndex] : null;
                       return (
                         <div
-                          key={colIndex}
+                          key={`row-${rowIndex}-peg-${colIndex}`}
                           onClick={(e) => isCurrent && handlePegClick(colIndex, e)}
                           className={`w-10 h-10 rounded-full transition-all flex items-center justify-center cursor-pointer ${
                             color 
@@ -155,7 +156,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                         const isPartial = !isPerfect && i < attempt.feedback!.perfect + attempt.feedback!.partial;
                         return (
                           <div
-                            key={i}
+                            key={`row-${rowIndex}-feedback-${i}`}
                             className={`w-2.5 h-2.5 rounded-full transition-all ${
                               isPerfect ? 'perfect-dot' : 
                               isPartial ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]' : 
@@ -172,8 +173,9 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
           })}
         </div>
       </div>
+    </div>
 
-      {activePicker && (
+    {activePicker && (
         <ColorPickerPopup
           position={{ x: activePicker.x, y: activePicker.y }}
           onSelect={handleColorSelect}

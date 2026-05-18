@@ -14,7 +14,7 @@ export const COLOR_MAP: Record<PegColor, string> = {
   yellow: 'bg-amber-100 shadow-amber-100/40',
   green: 'bg-emerald-300 shadow-emerald-300/40',
   blue: 'bg-sky-300 shadow-sky-300/40',
-  purple: 'bg-violet-600 shadow-violet-600/40',
+  purple: 'bg-violet-300 shadow-violet-300/40',
   darkBlue: 'bg-blue-800 shadow-blue-800/40',
   pink: 'bg-pink-300 shadow-pink-300/40',
 };
