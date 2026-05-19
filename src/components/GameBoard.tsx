@@ -126,10 +126,14 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                   borderColor: (isCurrent && theme !== 'Animals') ? (theme === 'Lollipop' ? 'rgba(var(--primary-rgb), 0.4)' : 'var(--theme-accent)') : undefined
                 }}
               >
-                <div className="flex items-center gap-0.5 sm:gap-4">
-                  <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white/30 border border-white/5 shadow-inner ${difficulty === 'Challenging' ? 'hidden sm:flex' : 'flex'}`}>
-                    {rowIndex + 1}
+                <div className="flex-1 flex items-center">
+                  {/* Attempt Number Container - matched to feedback width for centering */}
+                  <div className={`w-10 sm:w-14 shrink-0 items-center justify-start ${difficulty === 'Challenging' ? 'hidden sm:flex' : 'flex'}`}>
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white/30 border border-white/5 shadow-inner">
+                      {rowIndex + 1}
+                    </div>
                   </div>
+                  
                   <div className={`flex flex-1 justify-center items-center ${
                     config.pegs >= 8 
                       ? 'gap-0.5 sm:gap-2' 
@@ -137,7 +141,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                         ? 'gap-1 sm:gap-4' 
                         : config.pegs >= 5
                           ? 'gap-4 sm:gap-8'
-                          : 'gap-8 sm:gap-14'
+                          : 'gap-7 sm:gap-14'
                   }`}>
                     {Array.from({ length: config.pegs }).map((_, colIndex) => {
                       const color = attempt ? attempt.colors[colIndex] : isCurrent ? currentGuess[colIndex] : null;
@@ -163,12 +167,12 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                           whileHover={isCurrent ? { scale: 1.1 } : {}}
                           whileTap={isCurrent ? { scale: 0.95 } : {}}
                           className={`${
-                            config.pegs >= 8 ? 'w-8 h-8 sm:w-16 sm:h-16' : 
+                            config.pegs >= 8 ? 'w-7 h-7 sm:w-16 sm:h-16' : 
                             config.pegs >= 6 ? 'w-9 h-9 sm:w-16 sm:h-16' : 
                             'w-11 h-11 sm:w-16 sm:h-16'
                           } rounded-full transition-all flex items-center justify-center cursor-pointer touch-manipulation relative overflow-visible ${
                             color 
-                              ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : (config.pegs >= 8 ? 'bg-white/10 dark-inner-shadow text-sm sm:text-3xl' : 'bg-white/10 dark-inner-shadow text-xl sm:text-3xl')
+                              ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : (config.pegs >= 8 ? 'bg-white/10 dark-inner-shadow text-[10px] sm:text-3xl' : 'bg-white/10 dark-inner-shadow text-xl sm:text-3xl')
                               : `bg-surface-container-highest shadow-inner border ${isCurrent ? 'border-white/20' : 'border-white/5'}`
                           } ${isCurrent ? 'hover:ring-2 ring-primary/40' : ''}`}
                         >
@@ -183,7 +187,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                                 className="w-full h-full flex items-center justify-center rounded-full"
                               >
                                 {theme !== 'Lollipop' && (
-                                  <span className={config.pegs >= 8 ? 'text-lg sm:text-3xl' : 'text-xl sm:text-3xl'}>
+                                  <span className={config.pegs >= 8 ? 'text-sm sm:text-3xl' : 'text-xl sm:text-3xl'}>
                                     {THEME_PEGS[theme as Exclude<Theme, 'Lollipop'>][color]}
                                   </span>
                                 )}
