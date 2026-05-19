@@ -3,7 +3,7 @@ import { Difficulty, GameStatus, Theme } from './types';
 import DifficultyMenu from './components/DifficultyMenu';
 import GameBoard from './components/GameBoard';
 import SettingsModal from './components/SettingsModal';
-import { Settings, Timer as TimerIcon, Trophy, HelpCircle, LayoutGrid, Info } from 'lucide-react';
+import { Settings, Home, HelpCircle, Trophy, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
@@ -31,40 +31,47 @@ export default function App() {
         theme === 'Lollipop' ? 'bg-surface/80' : 
         theme === 'Animals' ? 'bg-white/20 border-black/10' : 'bg-black/20'
       }`}>
-        <div className="flex items-center gap-2">
-          <div className="grid grid-cols-2 gap-1 p-0.5" onClick={() => setGameState('MENU')}>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setGameState('MENU')}>
+          <div className="grid grid-cols-2 gap-1 p-0.5">
             <div className="w-2.5 h-2.5 rounded-full bg-rose-400 peg-3d shadow-sm" />
             <div className="w-2.5 h-2.5 rounded-full bg-amber-100 peg-3d shadow-sm" />
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-300 peg-3d shadow-sm" />
             <div className="w-2.5 h-2.5 rounded-full bg-sky-300 peg-3d shadow-sm" />
           </div>
-          <h1 className="text-xl font-bold tracking-[0.15em] flex cursor-pointer" onClick={() => setGameState('MENU')}>
+          <h1 className="text-xl font-bold tracking-[0.15em] flex">
             {['C','O','D','E','L','O','G','I','C'].map((char, index) => {
               const colors = ['text-rose-400', 'text-orange-300', 'text-amber-200', 'text-emerald-300', 'text-sky-300', 'text-violet-300'];
               return <span key={`logo-${index}`} className={colors[index % colors.length]}>{char}</span>
             })}
           </h1>
         </div>
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-2 items-center">
+          <button 
+            onClick={() => setGameState('MENU')}
+            className="text-on-surface-variant hover:text-white transition-colors p-1"
+            title="Home"
+          >
+            <Home size={24} strokeWidth={1.5} />
+          </button>
           <button 
             onClick={() => setShowSettings(true)}
             className="text-on-surface-variant hover:text-white transition-colors p-1"
             title="Settings"
           >
-            <Settings size={32} />
+            <Settings size={24} strokeWidth={1.5} />
           </button>
           <button 
             onClick={() => setShowRules(true)}
             className="text-on-surface-variant hover:text-white transition-colors p-1"
             title="Help"
           >
-            <HelpCircle size={32} />
+            <HelpCircle size={24} strokeWidth={1.5} />
           </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow overflow-hidden px-4 py-4 max-w-lg mx-auto w-full flex flex-col items-center">
+      <main className="flex-grow overflow-hidden px-2 sm:px-4 py-2 sm:py-4 max-w-lg mx-auto w-full flex flex-col items-center">
         <AnimatePresence mode="wait">
           {gameState === 'MENU' ? (
             <motion.div

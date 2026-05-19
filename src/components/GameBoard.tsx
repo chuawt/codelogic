@@ -3,7 +3,7 @@ import { Attempt, Difficulty, GameStatus, PegColor, Theme } from '../types';
 import { DIFFICULTY_SETTINGS, COLORS, COLOR_MAP, THEME_PEGS } from '../constants';
 import { calculateFeedback } from '../lib/gameLogic';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, Timer, Home, Info } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import ColorPickerPopup from './ColorPickerPopup';
 import GameOverModal from './GameOverModal';
 
@@ -95,23 +95,8 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
   const isCurrentRowFull = !currentGuess.includes(null);
 
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col h-full space-y-4">
-      {/* Game Header */}
-      <div className="flex justify-between items-center px-1 shrink-0">
-        <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full border border-white/5 shadow-lg">
-          <Timer size={16} className="text-primary" />
-          <span className="font-mono text-base font-bold text-on-surface-variant">
-            {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}
-          </span>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={onQuit} className="p-1.5 glass-card rounded-full text-on-surface-variant hover:text-white transition-colors">
-            <Home size={18} />
-          </button>
-        </div>
-      </div>
-
-      <div className={`flex-grow glass-card rounded-3xl p-3 sm:p-6 board-recess relative overflow-hidden flex flex-col custom-scrollbar transition-all duration-500 ${theme !== 'Lollipop' ? 'theme-' + theme.toLowerCase() : ''}`}
+    <div className="w-full max-w-lg mx-auto flex flex-col h-full space-y-2 sm:space-y-4">
+      <div className={`flex-grow glass-card rounded-2xl sm:rounded-3xl p-1.5 sm:p-6 board-recess relative overflow-hidden flex flex-col custom-scrollbar transition-all duration-500 ${theme !== 'Lollipop' ? 'theme-' + theme.toLowerCase() : ''}`}
            style={{ 
              borderColor: theme !== 'Lollipop' ? 'var(--theme-accent)' : undefined,
              boxShadow: theme !== 'Lollipop' ? '0 0 40px var(--theme-surface-glow)' : undefined
@@ -141,16 +126,18 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                   borderColor: (isCurrent && theme !== 'Animals') ? (theme === 'Lollipop' ? 'rgba(var(--primary-rgb), 0.4)' : 'var(--theme-accent)') : undefined
                 }}
               >
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white/30 border border-white/5 shadow-inner">
+                <div className="flex items-center gap-0.5 sm:gap-4">
+                  <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white/30 border border-white/5 shadow-inner ${difficulty === 'Challenging' ? 'hidden sm:flex' : 'flex'}`}>
                     {rowIndex + 1}
                   </div>
-                  <div className={`flex flex-1 justify-center ${
-                    difficulty === 'Easy' 
-                      ? 'gap-10 sm:gap-16' 
-                      : difficulty === 'Challenging' 
-                        ? 'gap-2 sm:gap-3' 
-                        : 'gap-5 sm:gap-7'
+                  <div className={`flex flex-1 justify-center items-center ${
+                    config.pegs >= 8 
+                      ? 'gap-0.5 sm:gap-2' 
+                      : config.pegs >= 6 
+                        ? 'gap-1 sm:gap-4' 
+                        : config.pegs >= 5
+                          ? 'gap-4 sm:gap-8'
+                          : 'gap-8 sm:gap-14'
                   }`}>
                     {Array.from({ length: config.pegs }).map((_, colIndex) => {
                       const color = attempt ? attempt.colors[colIndex] : isCurrent ? currentGuess[colIndex] : null;
@@ -175,10 +162,14 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                           }}
                           whileHover={isCurrent ? { scale: 1.1 } : {}}
                           whileTap={isCurrent ? { scale: 0.95 } : {}}
-                          className={`w-11 h-11 sm:w-16 sm:h-16 rounded-full transition-all flex items-center justify-center cursor-pointer touch-manipulation relative overflow-visible ${
+                          className={`${
+                            config.pegs >= 8 ? 'w-8 h-8 sm:w-16 sm:h-16' : 
+                            config.pegs >= 6 ? 'w-9 h-9 sm:w-16 sm:h-16' : 
+                            'w-11 h-11 sm:w-16 sm:h-16'
+                          } rounded-full transition-all flex items-center justify-center cursor-pointer touch-manipulation relative overflow-visible ${
                             color 
-                              ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl sm:text-3xl'
-                              : 'bg-surface-container-highest shadow-inner border border-white/5'
+                              ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : (config.pegs >= 8 ? 'bg-white/10 dark-inner-shadow text-sm sm:text-3xl' : 'bg-white/10 dark-inner-shadow text-xl sm:text-3xl')
+                              : `bg-surface-container-highest shadow-inner border ${isCurrent ? 'border-white/20' : 'border-white/5'}`
                           } ${isCurrent ? 'hover:ring-2 ring-primary/40' : ''}`}
                         >
                           <AnimatePresence mode="popLayout">
@@ -191,11 +182,15 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                 className="w-full h-full flex items-center justify-center rounded-full"
                               >
-                                {theme !== 'Lollipop' && THEME_PEGS[theme as Exclude<Theme, 'Lollipop'>][color]}
+                                {theme !== 'Lollipop' && (
+                                  <span className={config.pegs >= 8 ? 'text-lg sm:text-3xl' : 'text-xl sm:text-3xl'}>
+                                    {THEME_PEGS[theme as Exclude<Theme, 'Lollipop'>][color]}
+                                  </span>
+                                )}
                               </motion.div>
                             )}
                           </AnimatePresence>
-                          {!color && isCurrent && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-white/20" />}
+                          {!color && isCurrent && <div className={`${config.pegs >= 8 ? 'w-0.5 h-0.5' : 'w-1 h-1'} sm:w-1.5 sm:h-1.5 rounded-full bg-white/20`} />}
                           
                           {/* Pulsing selection ring */}
                           {isSelected && (
@@ -222,7 +217,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                 </div>
 
                 {/* Feedback Area */}
-                <div className={`w-10 h-10 sm:w-14 sm:h-14 glass-card rounded-xl flex items-center justify-center relative overflow-hidden ${theme === 'Animals' ? 'feedback-background' : ''}`}>
+                <div className={`ml-[10px] w-10 h-10 sm:w-14 sm:h-14 glass-card rounded-xl flex items-center justify-center relative overflow-hidden ${theme === 'Animals' ? 'feedback-background' : ''}`}>
                   <AnimatePresence mode="wait">
                     {isCurrent && isCurrentRowFull ? (
                       <motion.button
