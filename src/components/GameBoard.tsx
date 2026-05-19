@@ -116,8 +116,8 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
              borderColor: theme !== 'Lollipop' ? 'var(--theme-accent)' : undefined,
              boxShadow: theme !== 'Lollipop' ? '0 0 40px var(--theme-surface-glow)' : undefined
            }}>
-        <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col-reverse gap-1 sm:gap-1.5 pr-1">
-          <div className="flex flex-col-reverse gap-1 sm:gap-1.5 min-h-full justify-start">
+        <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col-reverse gap-0.5 sm:gap-1 pr-1">
+          <div className="flex flex-col-reverse gap-0.5 sm:gap-1 min-h-full justify-start">
             {/* History Rows - Stacked from Bottom to Top */}
             {Array.from({ length: config.attempts }).map((_, rowIndex) => {
             const attempt = history[rowIndex];
@@ -129,7 +129,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                 key={`row-${rowIndex}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={`flex items-center justify-between p-1.5 sm:p-2 rounded-2xl transition-all h-[52px] sm:h-[72px] shrink-0 border border-transparent ${
+                className={`flex items-center justify-between p-1 sm:p-1.5 rounded-2xl transition-all h-[44px] sm:h-[64px] shrink-0 border border-transparent ${
                   isCurrent && theme !== 'Animals' ? 'shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]' : 'bg-surface-container/40'
                 } ${isInactive ? 'opacity-30 grayscale' : ''}`}
                 style={{
@@ -175,7 +175,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                           }}
                           whileHover={isCurrent ? { scale: 1.1 } : {}}
                           whileTap={isCurrent ? { scale: 0.95 } : {}}
-                          className={`w-8 h-8 sm:w-11 sm:h-11 rounded-full transition-all flex items-center justify-center cursor-pointer touch-manipulation relative overflow-visible ${
+                          className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full transition-all flex items-center justify-center cursor-pointer touch-manipulation relative overflow-visible ${
                             color 
                               ? theme === 'Lollipop' ? `peg-3d ${COLOR_MAP[color]}` : 'bg-white/10 dark-inner-shadow text-xl sm:text-2xl'
                               : 'bg-surface-container-highest shadow-inner border border-white/5'
@@ -222,7 +222,7 @@ export default function GameBoard({ difficulty, theme, onQuit }: GameBoardProps)
                 </div>
 
                 {/* Feedback Area */}
-                <div className={`w-10 h-10 sm:w-14 sm:h-14 glass-card rounded-xl flex items-center justify-center relative overflow-hidden ${theme === 'Animals' ? 'feedback-background' : ''}`}>
+                <div className={`w-8 h-8 sm:w-12 sm:h-12 glass-card rounded-xl flex items-center justify-center relative overflow-hidden ${theme === 'Animals' ? 'feedback-background' : ''}`}>
                   <AnimatePresence mode="wait">
                     {isCurrent && isCurrentRowFull ? (
                       <motion.button
